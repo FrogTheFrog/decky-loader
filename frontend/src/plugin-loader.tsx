@@ -425,7 +425,7 @@ class PluginLoader extends Logger {
       callServerMethod: this.callServerMethod,
       openFilePicker: this.openFilePicker,
       openFilePickerV2: this.openFilePickerV2,
-      async callPluginMethod(methodName: string, args = {}) {
+      async callPluginMethod(methodName: string, args = {}, timeout_ms: number = 60 * 1000) {
         try {
           console.log('BEFORE FETCH', `http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`);
           const response = await fetch(`http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`, {
@@ -438,6 +438,7 @@ class PluginLoader extends Logger {
             body: JSON.stringify({
               args,
             }),
+            signal: AbortSignal.timeout(timeout_ms),
           });
 
           console.log('AFTER FETCH', methodName);
