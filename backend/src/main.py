@@ -94,18 +94,7 @@ class PluginManager:
         self.web_app.add_routes([static("/static", path.join(path.dirname(__file__), '..', 'static'))])
         self.web_app.add_routes([static("/legacy", path.join(path.dirname(__file__), 'legacy'))])
         self.web_app.add_routes([
-            get("/frontend/{path:.*}", self.plugin_loader.handle_frontend_assets),
-            get("/locales/{path:.*}", self.plugin_loader.handle_frontend_locales),
-            get("/plugins", self.plugin_loader.get_plugins),
-            get("/plugins/{plugin_name}/frontend_bundle", self.plugin_loader.handle_frontend_bundle),
-            post("/plugins/{plugin_name}/methods/{method_name}", self.plugin_loader.handle_plugin_method_call),
-            get("/plugins/{plugin_name}/assets/{path:.*}", self.plugin_loader.handle_plugin_frontend_assets),
-            post("/plugins/{plugin_name}/reload", self.plugin_loader.handle_backend_reload_request),
-
-            # The following is legacy plugin code.
-            get("/plugins/load_main/{name}", self.plugin_loader.load_plugin_main_view),
-            get("/plugins/plugin_resource/{name}/{path:.+}", self.plugin_loader.handle_sub_route),
-            get("/steam_resource/{path:.+}", self.plugin_loader.get_steam_resource)
+            post("/plugins/{plugin_name}/methods/{method_name}", self.plugin_loader.handle_plugin_method_call)
         ])
 
     def exception_handler(self, loop: AbstractEventLoop, context: Dict[str, str]):
