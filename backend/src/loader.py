@@ -83,21 +83,6 @@ class Loader:
             self.observer.schedule(self.watcher, self.plugin_path, recursive=True) # type: ignore
             self.observer.start()
             self.loop.create_task(self.enable_reload_wait())
-            
-        server_instance.web_app.add_routes([
-            web.get("/frontend/{path:.*}", self.handle_frontend_assets),
-            web.get("/locales/{path:.*}", self.handle_frontend_locales),
-            web.get("/plugins", self.get_plugins),
-            web.get("/plugins/{plugin_name}/frontend_bundle", self.handle_frontend_bundle),
-            web.post("/plugins/{plugin_name}/methods/{method_name}", self.handle_plugin_method_call),
-            web.get("/plugins/{plugin_name}/assets/{path:.*}", self.handle_plugin_frontend_assets),
-            web.post("/plugins/{plugin_name}/reload", self.handle_backend_reload_request),
-
-            # The following is legacy plugin code.
-            web.get("/plugins/load_main/{name}", self.load_plugin_main_view),
-            web.get("/plugins/plugin_resource/{name}/{path:.+}", self.handle_sub_route),
-            web.get("/steam_resource/{path:.+}", self.get_steam_resource)
-        ])
 
     async def enable_reload_wait(self):
         if self.live_reload:
