@@ -32,13 +32,13 @@ def get_csrf_token():
 
 @middleware
 async def csrf_middleware(request: Request, handler: Handler):
-    logger.info("BEFORE", request)
+    logger.info(f"BEFORE {request}")
     if str(request.method) == "OPTIONS" or request.headers.get('Authentication') == csrf_token or str(request.rel_url) == "/auth/token" or str(request.rel_url).startswith("/plugins/load_main/") or str(request.rel_url).startswith("/static/") or str(request.rel_url).startswith("/legacy/") or str(request.rel_url).startswith("/steam_resource/") or str(request.rel_url).startswith("/frontend/") or assets_regex.match(str(request.rel_url)) or frontend_regex.match(str(request.rel_url)):
         val = await handler(request)
-        logger.info("AFTER", request)
+        logger.info(f"AFTER {request}")
         return val
     
-    logger.info("Forbidden", request)
+    logger.info(f"Forbidden {request}")
     return Response(text='Forbidden', status=403)
 
 # Get the default homebrew path unless a home_path is specified. home_path argument is deprecated

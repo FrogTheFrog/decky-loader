@@ -51,6 +51,11 @@ def chown_plugin_dir():
 if get_chown_plugin_path() == True:
     chown_plugin_dir()
 
+from aiohttp.abc import AbstractAccessLogger
+class MyLogger(AbstractAccessLogger):
+    def log(self, request, response, time):
+        logger.info(f"{request} =[{time}]> {response}")
+
 class PluginManager:
     def __init__(self, loop: AbstractEventLoop) -> None:
         self.loop = loop
@@ -167,7 +172,7 @@ class PluginManager:
             pass
 
     def run(self):
-        return run_app(self.web_app, host=get_server_host(), port=get_server_port(), loop=self.loop, access_log=None)
+        return run_app(self.web_app, host=get_server_host(), port=get_server_port(), loop=self.loop, access_log_class=MyLogger)
 
 def main():
     if ON_WINDOWS:
