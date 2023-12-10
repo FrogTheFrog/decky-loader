@@ -89,6 +89,7 @@ class Loader:
             web.get("/locales/{path:.*}", self.handle_frontend_locales),
             web.get("/plugins", self.get_plugins),
             web.get("/plugins/{plugin_name}/frontend_bundle", self.handle_frontend_bundle),
+            web.post("/plugins/{plugin_name}/methods/{method_name}", self.handle_plugin_method_call),
             web.get("/plugins/{plugin_name}/assets/{path:.*}", self.handle_plugin_frontend_assets),
             web.post("/plugins/{plugin_name}/reload", self.handle_backend_reload_request),
 

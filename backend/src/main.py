@@ -17,7 +17,7 @@ import multiprocessing
 import aiohttp_cors # type: ignore
 # Partial imports
 from aiohttp import client_exceptions
-from aiohttp.web import Application, Response, Request, get, post, run_app, static # type: ignore
+from aiohttp.web import Application, Response, Request, get, run_app, static # type: ignore
 from aiohttp_jinja2 import setup as jinja_setup
 
 # local modules
@@ -93,9 +93,6 @@ class PluginManager:
             self.cors.add(route) # type: ignore
         self.web_app.add_routes([static("/static", path.join(path.dirname(__file__), '..', 'static'))])
         self.web_app.add_routes([static("/legacy", path.join(path.dirname(__file__), 'legacy'))])
-        self.web_app.add_routes([
-            post("/plugins/{plugin_name}/methods/{method_name}", self.plugin_loader.handle_plugin_method_call)
-        ])
 
     def exception_handler(self, loop: AbstractEventLoop, context: Dict[str, str]):
         if context["message"] == "Unclosed connection":
