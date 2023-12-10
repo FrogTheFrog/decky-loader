@@ -426,24 +426,28 @@ class PluginLoader extends Logger {
       openFilePicker: this.openFilePicker,
       openFilePickerV2: this.openFilePickerV2,
       async callPluginMethod(methodName: string, args = {}) {
-        console.log('BEFORE FETCH', `http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`);
-        const response = await fetch(`http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            Authentication: window.deckyAuthToken,
-          },
-          body: JSON.stringify({
-            args,
-          }),
-        });
+        try {
+          console.log('BEFORE FETCH', `http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`);
+          const response = await fetch(`http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              Authentication: window.deckyAuthToken,
+            },
+            body: JSON.stringify({
+              args,
+            }),
+          });
 
-        console.log('AFTER FETCH', methodName);
-        console.log('BEFORE response.json()');
-        const wud = response.json();
-        console.log('AFTER response.json()');
-        return wud;
+          console.log('AFTER FETCH', methodName);
+          console.log('BEFORE response.json()');
+          const wud = response.json();
+          console.log('AFTER response.json()');
+          return wud;
+        } catch (error) {
+          console.error(error);
+        }
       },
       fetchNoCors(url: string, request: any = {}) {
         let args = { method: 'POST', headers: {} };
