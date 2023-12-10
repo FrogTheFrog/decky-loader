@@ -152,17 +152,28 @@ class PluginWrapper:
         get_event_loop().create_task(_(self))
 
     async def execute_method(self, method_name: str, kwargs: Dict[Any, Any]):
+        self.log.info(f"execute_method: Entering {method_name}")
+
         if self.passive:
             raise RuntimeError("This plugin is passive (aka does not implement main.py)")
         async with self.method_call_lock:
+            self.log.info(f"execute_method: Before get_socket_connection")
             # reader, writer = 
             await self.socket.get_socket_connection()
 
+            self.log.info(f"execute_method: Before write_single_line")
             await self.socket.write_single_line(dumps({ "method": method_name, "args": kwargs }, ensure_ascii=False))
 
+            self.log.info(f"execute_method: Before read_single_line")
             line = await self.socket.read_single_line()
             if line != None:
                 res = loads(line)
                 if not res["success"]:
+                    self.log.info(f"execute_method: Before Exception")
                     raise Exception(res["res"])
+                
+                self.log.info(f"execute_method: Before res")
                 return res["res"]
+            self.log.info(f"execute_method: Before call lock exit")
+
+        self.log.info(f"execute_method: Before return")    
