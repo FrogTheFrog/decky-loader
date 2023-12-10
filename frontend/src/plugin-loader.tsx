@@ -426,7 +426,7 @@ class PluginLoader extends Logger {
       openFilePicker: this.openFilePicker,
       openFilePickerV2: this.openFilePickerV2,
       async callPluginMethod(methodName: string, args = {}) {
-        console.log('BEFORE FETCH', methodName);
+        console.log('BEFORE FETCH', `http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`);
         const response = await fetch(`http://127.0.0.1:1337/plugins/${pluginName}/methods/${methodName}`, {
           method: 'POST',
           credentials: 'include',
