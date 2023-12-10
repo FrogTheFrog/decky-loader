@@ -174,30 +174,36 @@ class Loader:
             self.import_plugin(*args) # type: ignore
 
     async def handle_plugin_method_call(self, request: web.Request):
-        self.logger.info(f"handle_plugin_method_call: Entering {request.match_info['method_name']}")
-
         res = {}
-        plugin = self.plugins[request.match_info["plugin_name"]]
-        method_name = request.match_info["method_name"]
+       
         try:
-            self.logger.info(f"handle_plugin_method_call: Before request.json()")
-            method_info = await request.json()
-            args: Any = method_info["args"]
-        except JSONDecodeError:
-            self.logger.info(f"handle_plugin_method_call: In JSONDecodeError")
-            args = {}
-        try:
+            plugin = self.plugins[request.match_info["plugin_name"]]
+            method_name = request.match_info["method_name"]
+
+            self.logger.info(f"handle_plugin_method_call [{method_name}]: Entering")
+
+            try:
+                self.logger.info(f"handle_plugin_method_call [{method_name}]: Before request.json()")
+                method_info = await request.json()
+                args: Any = method_info["args"]
+            except JSONDecodeError:
+                self.logger.info(f"handle_plugin_method_call [{method_name}]: In JSONDecodeError")
+                args = {}
+
             if method_name.startswith("_"):
                 raise RuntimeError("Tried to call private method")
             
-            self.logger.info(f"handle_plugin_method_call: Before execute_method")
+            self.logger.info(f"handle_plugin_method_call [{method_name}]: Before execute_method")
             res["result"] = await plugin.execute_method(method_name, args)
             res["success"] = True
+            self.logger.info(f"handle_plugin_method_call [{method_name}]: Before web.json_response(res)")
+
         except Exception as e:
             res["result"] = str(e)
             res["success"] = False
+            self.logger.info(f"handle_plugin_method_call [ERROR]: Before web.json_response(res)")
 
-        self.logger.info(f"handle_plugin_method_call: Before web.json_response(res)")
+
         return web.json_response(res)
 
     """
